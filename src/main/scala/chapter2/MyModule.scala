@@ -80,7 +80,7 @@ object MyModule {
   }
 
   def partial1[A, B, C](a: A, f: (A, B) => C): B => C = {
-    (b: B) => f(a, b)
+    b: B => f(a, b)
   }
 
   /**
@@ -96,7 +96,7 @@ object MyModule {
     * @return
     */
   def curry[A, B, C](f: (A, B) => C): A => (B => C) = {
-    (a: A) => (b: B) => f(a, b)
+    a: A => (b: B) => f(a, b)
   }
 
 
@@ -127,7 +127,7 @@ object MyModule {
     * @return
     */
   def compose[A, B, C](f: B => C, g: A => B): A => C = {
-    (a: A) => f(g(a))
+    a: A => f(g(a))
   }
 
   def main(args: Array[String]): Unit = {
@@ -139,6 +139,18 @@ object MyModule {
     println("The index is %d".format(findFirst(Array(1, 2, 3), (a: Int) => a == 2)))
     println("Is Sorted? %b".format(isSorted(Array(1, 2, 3, 3), (a: Int, b: Int) => a <= b)))
     println("Is Sorted? %b".format(isSorted(Array("a", "ab", "abc", "abcd"), (a: String, b: String) => a <= b)))
+
+    // Playing with high order functions
+    val A_B_to_C = (a: Int, b: Boolean) => "%d -> %b".format(a, b)
+    println("Partial1 %s".format(partial1(5, A_B_to_C)(true)))
+    println("Curry %s".format(curry(A_B_to_C)(5)(true)))
+
+    val A_to_B_to_C = (a: Int) => (b: Boolean) => A_B_to_C(a, b)
+    println("Uncurry %s".format(uncurry(A_to_B_to_C)(5, true)))
+
+    val B_to_C = (b: Boolean) => "%b".format(b)
+    val A_to_B = (a: Int) => a>0
+    println("Compose %s".format(compose(B_to_C, A_to_B)(5)))
   }
 
 }

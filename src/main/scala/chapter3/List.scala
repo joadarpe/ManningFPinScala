@@ -244,8 +244,38 @@ object List {
     * Write a function flatMap that works like map except that the function given will return a list instead of a single result,
     * and that list should be inserted into the final resulting list.
     */
-  def flatMap[A,B](ls: List[A])(f: A => List[B]): List[B] = {
+  def flatMap[A, B](ls: List[A])(f: A => List[B]): List[B] = {
     concat(map(ls)(f))
+  }
+
+  /**
+    * Exercise 3.21
+    * Use flatMap to implement filter.
+    */
+  def filterFM[A](ls: List[A])(f: A => Boolean): List[A] = {
+    flatMap(ls)(a => if (f(a)) List(a) else Nil)
+  }
+
+  /**
+    * Exercise 3.22
+    * Write a function that accepts two lists and constructs a new list by adding corresponding elements.
+    * For example, List(1,2,3) and List(4,5,6) become List(5,7,9).
+    */
+  def sumItems(lsa: List[Int], lsb: List[Int]): List[Int] = (lsa, lsb) match {
+    case (Nil, b) => b
+    case (a, Nil) => a
+    case (Cons(h1, t1), Cons(h2, t2)) => Cons(h1 + h2, sumItems(t1, t2))
+  }
+
+  /**
+    * Exercise 3.23
+    * Generalize the function you just wrote so that it’s not specific to integers or addition.
+    * Name your generalized function zipWith.
+    */
+  def zipWith[A, B, C](lsa: List[A], lsb: List[B])(f: (A, B) => C): List[C] = (lsa, lsb) match {
+    case (Nil, _) => Nil
+    case (_, Nil) => Nil
+    case (Cons(h1, t1), Cons(h2, t2)) => Cons(f(h1, h2), zipWith(t1, t2)(f))
   }
 
 }

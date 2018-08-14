@@ -90,7 +90,23 @@ class ListTest extends FreeSpec with Matchers {
   }
 
   "Exercise 3.20" in {
-    List.flatMap(List(1,2,3))(i => List(i,i)) should be (List(1,1,2,2,3,3))
+    List.flatMap(List(1, 2, 3))(i => List(i, i)) should be(List(1, 1, 2, 2, 3, 3))
+  }
+
+  "Exercise 3.21" in {
+    List.filterFM(List(1, 2, 3, 4, 5, 6))(a => a % 2 == 0) should be(List(2, 4, 6))
+  }
+
+  "Exercise 3.22" in {
+    List.sumItems(List(1, 2, 3), Nil) should be(List(1, 2, 3))
+    List.sumItems(Nil, List(1, 2, 3)) should be(List(1, 2, 3))
+    List.sumItems(List(1, 2, 3), List(1, 2, 3)) should be(List(2, 4, 6))
+    List.sumItems(List(1), List(1, 2, 3)) should be(List(2, 2, 3))
+  }
+
+  "EExercise 3.23" in {
+    List.zipWith(List(1,2,3), Nil)((a, b) => s"$a $b") should be (Nil)
+    List.zipWith(List(1,2,3), List("One", "Two", "Three"))((a, b) => s"$a $b") should be (List("1 One", "2 Two", "3 Three"))
   }
 
 }

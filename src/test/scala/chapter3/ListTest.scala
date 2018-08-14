@@ -104,9 +104,15 @@ class ListTest extends FreeSpec with Matchers {
     List.sumItems(List(1), List(1, 2, 3)) should be(List(2, 2, 3))
   }
 
-  "EExercise 3.23" in {
+  "Exercise 3.23" in {
     List.zipWith(List(1,2,3), Nil)((a, b) => s"$a $b") should be (Nil)
     List.zipWith(List(1,2,3), List("One", "Two", "Three"))((a, b) => s"$a $b") should be (List("1 One", "2 Two", "3 Three"))
+  }
+
+  "Exercise 3.24" in {
+    List.hasSubsequence(List(1,2,3,4), List(1,2)) should be (true)
+    List.hasSubsequence(List(1,2,3,4), List(2,3)) should be (true)
+    List.hasSubsequence(List(1,2,3,4), List(4)) should be (true)
   }
 
 }

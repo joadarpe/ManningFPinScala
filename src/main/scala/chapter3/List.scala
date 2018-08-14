@@ -278,4 +278,25 @@ object List {
     case (Cons(h1, t1), Cons(h2, t2)) => Cons(f(h1, h2), zipWith(t1, t2)(f))
   }
 
+  /**
+    * Exercise 3.24
+    * Hard: As an example, implement hasSubsequence for checking whether a List contains another List as a subsequence.
+    * For instance, List(1,2,3,4) would have List(1,2), List(2,3), and List(4) as subsequences, among others.
+    * You may have some difficulty finding a concise purely functional implementation that is also efficient.
+    * That’s okay. Implement the function however comes most naturally.
+    * We’ll return to this implementation in chapter 5 and hopefully improve on it.
+    * Note: Any two values x and y can be compared for equality in Scala using the expression x == y.
+    */
+  def hasSubsequence[A](ls: List[A], sub: List[A]): Boolean = ls match {
+    case Nil => sub == Nil
+    case _ if startsWith(ls, sub) => true
+    case Cons(_, t) => hasSubsequence(t, sub)
+  }
+
+  def startsWith[A](l: List[A], prefix: List[A]): Boolean = (l, prefix) match {
+    case (_, Nil) => true
+    case (Cons(h, t), Cons(h2, t2)) if h == h2 => startsWith(t, t2)
+    case _ => false
+  }
+
 }

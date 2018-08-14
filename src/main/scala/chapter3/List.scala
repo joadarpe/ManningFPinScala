@@ -127,7 +127,11 @@ object List {
     * @tparam A
     * @return
     */
-  //def init[A](l: List[A]): List[A] // Not possible
+  def init[A](l: List[A]): List[A] = l match {
+    case Nil => Nil
+    case Cons(_, Nil) => Nil
+    case Cons(h, t) => Cons(h, init(t))
+  }
 
   def foldRight[A, B](l: List[A], z: B)(f: (A, B) => B): B = l match {
     case Nil => z
@@ -187,47 +191,67 @@ object List {
     */
   def foldLeft[A, B](as: List[A], z: B)(f: (B, A) => B): B = as match {
     case Nil => z
-    case Cons(h, t) => f(foldLeft(t, z)(f), h)
+    case Cons(h, t) => foldLeft(t, f(z, h))(f)
   }
 
-  def main(args: Array[String]): Unit = {
+  /**
+    * Exercise 3.11
+    * Write sum, product, and a function to compute the length of a list using foldLeft.
+    */
+  def sumFL(ls: List[Int]): Int = foldLeft(ls, 0)(_ + _)
 
-    println(s"The sum is ${sum(Cons(1, Cons(2, Cons(3, Cons(4, Nil)))))}")
-    // We can use List(...) thanks to the apply method
-    println(s"The product is ${product(List(1, 2, 3, 4, 5))}")
+  def productFL(ls: List[Double]): Double = foldLeft(ls, 1.0)(_ * _)
 
-    // 3.1
-    println(s"The value of x is $x")
+  def lengthFL[A](ls: List[A]): Int = foldLeft(ls, 0)((x, _) => x + 1)
 
-    // 3.2
-    println(s"The tail of 1,2 is ${tail(List(1, 2))}")
-    println(s"The tail of 1 is ${tail(List(1))}")
-    println(s"The tail of Nil is ${tail(Nil)}")
+  /**
+    * Exercise 3.12
+    * Write a function that returns the reverse of a list (given List(1,2,3) it returns List(3,2,1)).
+    * See if you can write it using a fold.
+    */
+  def reverse[A](ls: List[A]): List[A] = {
+    foldLeft(ls, Nil: List[A])((h, t) => Cons(t, h))
+  }
 
-    // 3.3
-    println(s"The new list is ${setHead(Nil, 1)}")
-    println(s"The new list is ${setHead(List(2, 3, 4), 1)}")
+  /**
+    * Exercise 3.13
+    * Hard: Can you write foldLeft in terms of foldRight? How about the other way around?
+    * Implementing foldRight via foldLeft is useful because it lets us implement foldRight tail-recursively,
+    * which means it works even for large lists without overflowing the stack.
+    *
+    * @param args
+    */
+  def foldLeftWithFoldRight[A, B](ls: List[A], z: B)(f: (B, A) => B): B = {
+    foldRight(reverse(ls), z)((a, b) => f(b, a))
+  }
 
-    // 3.4
-    println(s"The list after removing 1 elements is ${drop(List(1, 2, 3, 4, 5), 1)}")
-    println(s"The list after removing 5 elements is ${drop(List(1, 2, 3), 5)}")
+  def foldRightWithFoldLeft[A, B](ls: List[A], z: B)(f: (A, B) => B): B = {
+    foldLeft(reverse(ls), z)((b, a) => f(a, b))
+  }
 
-    // 3.5
-    println(s"The list without matched items is ${dropWhile(Nil, (a: Int) => a < 3)}")
-    println(s"The list without matched items is ${dropWhile(List(1, 2, 3, 4, 5), (a: Int) => a < 3)}")
-    println(s"dropWhile without typing f parameters ${dropWhileNew(List(1, 2, 3, 4, 5))(a => a < 3)}")
+  /**
+    * Exercise 3.14
+    * Implement append in terms of either foldLeft or foldRight.
+    *
+    * @param a1
+    * @param a2
+    * @tparam A
+    * @return
+    */
+  def appendFL[A](a1: List[A], a2: List[A]): List[A] = {
+    foldRight(a1, a2)(Cons(_, _))
+  }
 
-    println(s"The append of l1 and l2 is ${append(List(1, 2, 3), List(4, 5))}")
-
-    // 3.8
-    println(s"Result is ${foldRight(List(1, 2, 3), Nil: List[Int])(Cons(_, _))}")
-
-    // 3.9
-    println(s"The length of the list is ${length(List(1, 2, 3, 4, 5, 6))}")
-
-    // 3.10
-    println(s"FoldLeft of sum is ${foldLeft(List(1,2,3), 0)(_+_)}")
-
-
+  /**
+    * Exercise 3.15
+    * Hard: Write a function that concatenates a list of lists into a single list.
+    * Its runtime should be linear in the total length of all lists. Try to use functions we have already defined.
+    *
+    * @param lss
+    * @tparam A
+    * @return
+    */
+  def flattens[A](lss: List[List[A]]): List[A] = {
+    foldRight(lss, Nil: List[A])((h, t) => append(h, t))
   }
 }

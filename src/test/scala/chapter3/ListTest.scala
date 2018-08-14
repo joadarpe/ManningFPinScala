@@ -70,6 +70,27 @@ class ListTest extends FreeSpec with Matchers {
   }
 
   "Exercise 3.15" in {
-    List.flattens(List(List(1, 2), List(3, 4), List(5, 6))) should be(List(1, 2, 3, 4, 5, 6))
+    List.concat(List(List(1, 2), List(3, 4), List(5, 6))) should be(List(1, 2, 3, 4, 5, 6))
   }
+
+  "Exercise 3.16" in {
+    List.add1(List(0, 1, 2, 3)) should be(List(1, 2, 3, 4))
+  }
+
+  "Exercise 3.17" in {
+    List.doubleToString(List(1.0, 2.0, 3.0)) should be(List("1.0", "2.0", "3.0"))
+  }
+
+  "Exercise 3.18" in {
+    List.map(List(1.0, 2.0, 3.0))(a => a.toInt) should be(List(1, 2, 3))
+  }
+
+  "Exercise 3.19" in {
+    List.filter(List(1, 2, 3, 4, 5, 6))(a => a % 2 == 0) should be(List(2, 4, 6))
+  }
+
+  "Exercise 3.20" in {
+    List.flatMap(List(1,2,3))(i => List(i,i)) should be (List(1,1,2,2,3,3))
+  }
+
 }

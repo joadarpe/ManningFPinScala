@@ -48,4 +48,27 @@ class StreamTest extends FreeSpec with Matchers {
     Stream(1, 2).flatMap(a => Stream(a, a)).toList shouldBe List(1, 1, 2, 2)
   }
 
+  "Exercise 5.8 constant" in {
+    val ones: Stream[Int] = Stream.constant(1)
+    ones.take(5).toList shouldBe List(1, 1, 1, 1, 1)
+    ones.exists(_ % 2 >= 0) shouldBe true
+    ones.map(_ + 1) exists (_ % 2 == 0) shouldBe true
+  }
+
+  "Exercise 5.9 from" in {
+    val from: Stream[Int] = Stream.from(1)
+    from.take(5).toList shouldBe List(1, 2, 3, 4, 5)
+  }
+
+  "Exercise 5.10" in {
+    Stream.fib().take(5).toList shouldBe List(0, 1, 1, 2, 3)
+  }
+
+  "Exercise 5.11" in {
+    val f = (a: Int) => if (a < 5) Some((a, a + 1)) else None
+    Stream.unfold(1)(f).take(2).toList shouldBe List(1, 2)
+    Stream.unfold(1)(f).take(50).toList shouldBe List(1, 2, 3, 4)
+  }
+
+
 }

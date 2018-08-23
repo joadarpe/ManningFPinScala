@@ -24,7 +24,7 @@ class StreamTest extends FreeSpec with Matchers {
     Stream(1, 2, 3, 4, 5, 6, 7, 8, 9).forAll(_ < 5) shouldBe false
   }
 
-  "Exercise 5.5 takeWhile" in {
+  "Exercise 5.5 takeWhileFR" in {
     Stream(1, 2, 3, 4, 5).takeWhileFR(_ < 4).toList shouldBe List(1, 2, 3)
   }
 
@@ -56,19 +56,52 @@ class StreamTest extends FreeSpec with Matchers {
   }
 
   "Exercise 5.9 from" in {
-    val from: Stream[Int] = Stream.from(1)
-    from.take(5).toList shouldBe List(1, 2, 3, 4, 5)
+    Stream.from(1).take(5).toList shouldBe List(1, 2, 3, 4, 5)
   }
 
-  "Exercise 5.10" in {
+  "Exercise 5.10 fib" in {
     Stream.fib().take(5).toList shouldBe List(0, 1, 1, 2, 3)
   }
 
-  "Exercise 5.11" in {
+  "Exercise 5.11 unfold" in {
     val f = (a: Int) => if (a < 5) Some((a, a + 1)) else None
     Stream.unfold(1)(f).take(2).toList shouldBe List(1, 2)
     Stream.unfold(1)(f).take(50).toList shouldBe List(1, 2, 3, 4)
   }
 
+  "Exercise 5.12 fibU" in {
+    Stream.fibU().take(5).toList shouldBe List(0, 1, 1, 2, 3)
+  }
+
+  "Exercise 5.12 fromU" in {
+    Stream.fromU(1).take(5).toList shouldBe List(1, 2, 3, 4, 5)
+  }
+
+  "Exercise 5.12 constantU" in {
+    Stream.constantU("a").take(5).toList shouldBe List("a", "a", "a", "a", "a")
+    Stream.onesU.take(5).toList shouldBe List(1, 1, 1, 1, 1)
+  }
+
+  "Exercise 5.13 mapU" in {
+    Stream(1, 2, 3, 4, 5).mapU(_.toString).toList shouldBe List("1", "2", "3", "4", "5")
+  }
+
+  "Exercise 5.13 takeU" in {
+    Stream(1, 2, 3, 4, 5).takeU(2).toList shouldBe Stream(1, 2).toList
+  }
+
+  "Exercise 5.13 takeWhileU" in {
+    Stream(1, 2, 3, 4, 5).takeWhileU(_ < 4).toList shouldBe List(1, 2, 3)
+  }
+
+  "Exercise 5.13 zipWithU" in {
+    Stream(1, 2, 3).zipWithU(Stream("a", "b", "c"))((a, b) => a + b).toList shouldBe List("1a", "2b", "3c")
+    Stream(1, 2, 3).zipWithU(Stream("a"))((a, b) => a + b).toList shouldBe List("1a")
+  }
+
+  "Exercise 5.13 zipAll" in {
+    Stream(1, 2).zipAllU(Stream("a", "b")).toList shouldBe List((Some(1), Some("a")), (Some(2), Some("b")))
+    Stream(1, 2).zipAllU(Stream("a")).toList shouldBe List((Some(1), Some("a")), (Some(2), None))
+  }
 
 }

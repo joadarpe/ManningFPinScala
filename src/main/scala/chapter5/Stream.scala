@@ -141,6 +141,44 @@ sealed trait Stream[+A] {
     }
   }
 
+  /**
+    * Exercise 5.14
+    * Hard: Implement startsWith using functions you’ve written. It should check if one Stream is a prefix of another.
+    * For instance, Stream(1,2,3) startsWith Stream(1,2) would be true.
+    */
+  def startsWith[AB >: A](s2: Stream[AB]): Boolean = {
+    zipAllU(s2) takeWhileU (_._2.isDefined) forAll (a => a._1 == a._2)
+  }
+
+  /**
+    * Exercise 5.15
+    * Implement tails using unfold.
+    * For a given Stream, tails returns the Stream of suffixes of the input sequence, starting with the original Stream.
+    * For example, given Stream(1,2,3), it would return Stream(Stream(1,2,3), Stream(2,3), Stream(3), Stream()).
+    */
+  def tails: Stream[Stream[A]] = {
+    unfold(this) {
+      case Cons(h, t) => Some(Cons(h, t), t())
+      case _ => None
+    }
+  }
+
+  def hasSubSequence[AB >: A](s: Stream[AB]): Boolean = {
+    tails exists (_ startsWith s)
+  }
+
+  /**
+    * Exercise 5.16
+    * Hard: Generalize tails to the function scanRight, which is like a foldRight that returns a stream of the intermediate results.
+    */
+  def scanRight[B](z: B)(f: (A, => B) => B): Stream[B] = {
+    foldRight(z, Stream(z))((a, p0) => {
+      lazy val p1 = p0
+      val b2 = f(a, p1._1)
+      (b2, cons(b2, p1._2))
+    })._2
+  }
+
 }
 
 case object Empty extends Stream[Nothing]

@@ -6,6 +6,7 @@ class StreamTest extends FreeSpec with Matchers {
 
   "Exercise 5.1 toList" in {
     Stream(1, 2, 3, 4, 5).toList shouldBe List(1, 2, 3, 4, 5)
+    Stream().toList shouldBe empty
   }
 
   "Exercise 5.2 take" in {
@@ -102,6 +103,33 @@ class StreamTest extends FreeSpec with Matchers {
   "Exercise 5.13 zipAll" in {
     Stream(1, 2).zipAllU(Stream("a", "b")).toList shouldBe List((Some(1), Some("a")), (Some(2), Some("b")))
     Stream(1, 2).zipAllU(Stream("a")).toList shouldBe List((Some(1), Some("a")), (Some(2), None))
+  }
+
+  "Exercise 5.14 startsWith" in {
+    Stream(1, 2, 3).startsWith(Stream(1, 2)) shouldBe true
+    Stream(1, 2, 3).startsWith(Stream(1, 2, 3)) shouldBe true
+    Stream(1, 2, 3).startsWith(Stream(1, 3)) shouldBe false
+    Stream(1, 2, 3).startsWith(Stream(1, 2, 3, 4)) shouldBe false
+  }
+
+  "Exercise 5.15 tails" in {
+    Stream().tails.map(a => a.toList).toList shouldBe List()
+    Stream(1).tails.map(a => a.toList).toList shouldBe List(List(1))
+    Stream(1, 2, 3).tails.map(a => a.toList).toList shouldBe List(List(1, 2, 3), List(2, 3), List(3))
+  }
+
+  "Exercise 5.15 hasSubSequence" in {
+    Stream().hasSubSequence(Stream()) shouldBe false
+    Stream(1).hasSubSequence(Stream()) shouldBe true
+    Stream(1, 2).hasSubSequence(Stream(1)) shouldBe true
+    Stream(1, 2, 3).hasSubSequence(Stream(1, 2, 3)) shouldBe true
+    Stream(1, 2, 3).hasSubSequence(Stream(2, 3)) shouldBe true
+    Stream(1, 2, 3).hasSubSequence(Stream(4, 5)) shouldBe false
+  }
+
+  "Exercise 5.16 scanRight" in {
+    Stream(1, 2, 3).scanRight(0)(_ + _).toList shouldBe List(6, 5, 3, 0)
+    Stream(1, 2, 3).scanRight(4)(_ + _).toList shouldBe List(10, 9, 7, 4)
   }
 
 }
